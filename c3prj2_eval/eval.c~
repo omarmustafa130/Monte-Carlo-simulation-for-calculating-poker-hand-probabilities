@@ -139,11 +139,12 @@ int is_ace_low_straight_at(deck_t * hand, size_t index, suit_t fs)
     //so we will loop until we find 5 then perform normal iteration
     size_t new_index= 0;
     size_t size = hand->n_cards;
-    for(size_t i = index; i<size; i++)
+    for(size_t i = index+1; i<size; i++)
     {
       if((**(hand->cards+i)).value == 5)
       {
 	new_index = i;
+	counter++;
 	break;
       }
     }
@@ -153,7 +154,7 @@ int is_ace_low_straight_at(deck_t * hand, size_t index, suit_t fs)
       return 0;
     unsigned straight_last_value = (**(hand->cards + new_index)).value;
     //now we will iterate the normal way
-    for(size_t j = new_index+1; j<size ; j++)
+    for(size_t j = new_index; j<size ; j++)
     {
       current_card = (**(hand->cards+j));
       if(current_card.value == straight_last_value-1){
@@ -178,6 +179,7 @@ int is_ace_low_straight_at(deck_t * hand, size_t index, suit_t fs)
       if((**(hand->cards+i)).value == 5 && (**(hand->cards+i)).suit == fs)
       {
         new_index = i;
+	counter++;
         break;
       }
     }
@@ -302,9 +304,9 @@ int compare_hands(deck_t * hand1, deck_t * hand2) {
   hand_eval_t hand1_evaluated= evaluate_hand(hand1);
   hand_eval_t hand2_evaluated= evaluate_hand(hand2);
   if (hand1_evaluated.ranking < hand2_evaluated.ranking)
-    return 1;
-  else if (hand1_evaluated.ranking > hand2_evaluated.ranking)
     return -1;
+  else if (hand1_evaluated.ranking > hand2_evaluated.ranking)
+    return 1;
   else
   {
     for(size_t i = 0; i<5; i++)
@@ -312,9 +314,9 @@ int compare_hands(deck_t * hand1, deck_t * hand2) {
       card_t* card_1 = hand1_evaluated.cards[i];
       card_t* card_2 = hand2_evaluated.cards[i];
       if (card_1->value > card_2->value)
-	return 1;
+	return -1;
       else if (card_1->value < card_2->value)
-        return -1;
+        return 1;
       else
 	continue;
     }
@@ -329,7 +331,24 @@ int compare_hands(deck_t * hand1, deck_t * hand2) {
 //implementation in eval-c4.o) so that the
 //other functions we have provided can make
 //use of get_match_counts.
-unsigned * get_match_counts(deck_t * hand) ;
+unsigned * get_match_counts(deck_t * hand)
+{
+    unsigned int* match_counts_arr = malloc((hand->n_cards)*(sizeof(*match_counts_arr)));
+    for(size_t i = 0; i<hand->n_cards; i++)
+    {   
+        match_counts_arr[i] = 1;
+        for(size_t k = 0; k<hand->n_cards; k++)
+        {
+            if(i != k)
+            {
+                if(hand->cards[i]->value == hand->cards[k]->value)
+                    match_counts_arr[i] += 1;
+            }
+            
+        }
+    }
+    return match_counts_arr;
+}
 
 // We provide the below functions.  You do NOT need to modify them
 // In fact, you should not modify them!

@@ -12,25 +12,23 @@ const char * ranking_to_string(hand_ranking_t r) {
   switch(r)
   {
     case STRAIGHT_FLUSH:
-      return "STRAGI_Flush";
+      return "STRAIGHT_FLUSH";
     case FOUR_OF_A_KIND:
-      return "Straight Flush";
+      return "FOUR_OF_A_KIND";
     case FULL_HOUSE:
-      return "Straight Flush";
+      return "FULL_HOUSE";
     case FLUSH:
-      return "Flush";
+      return "FLUSH";
     case STRAIGHT:
-      return "Straight";
+      return "STRAIGHT";
     case THREE_OF_A_KIND:
-      return "Three  of a kind";
+      return "THREE_OF_A_KIND";
     case TWO_PAIR:
-      return "Two pair";
+      return "TWO_PAIR";
     case PAIR:
-      return "Pair";
-    case NOTHING:
-      return "Nothing";
+      return "PAIR";
     default:
-      return "";
+      return "NOTHING";
   }
   return " ";
 }
@@ -85,7 +83,7 @@ void print_card(card_t c) {
   printf("%c", value_letter(c));
   printf("%c", suit_letter(c));
 }
-
+/*
 card_t card_from_letters(char value_let, char suit_let) {
   card_t temp;
   assert((value_let>=('0'+2) && value_let<=('0' + 9)) || value_let=='0' || value_let == 'J' || value_let == 'Q' || value_let == 'K' || value_let == 'A');
@@ -112,6 +110,57 @@ card_t card_from_letters(char value_let, char suit_let) {
   else if(suit_let=='d')
     temp.suit= DIAMONDS;
 
+  return temp;
+}
+*/
+
+card_t card_from_letters(char value_let, char suit_let) {
+  /*This function should make and return a
+  card_t whose value and suit correspond
+  to the letters passed in. If the values passed
+  in are invalid, you should use assert()
+  or print an error message and exit(EXIT_FAILURE).*/
+  card_t temp;
+  switch (value_let)
+  {
+  case '0':
+    temp.value = 10;
+    break;
+  case 'J':
+    temp.value = VALUE_JACK;
+    break;
+  case 'Q':
+    temp.value = VALUE_QUEEN;
+    break;
+  case 'K':
+    temp.value = VALUE_KING;
+    break;
+  case 'A':
+    temp.value = VALUE_ACE;
+    break;
+  default:
+    temp.value = value_let - '0';
+    break;
+  }
+  switch (suit_let)
+  {
+  case 's':
+    temp.suit = SPADES;
+    break;
+  case 'h':
+    temp.suit = HEARTS;
+    break;
+  case 'd':
+    temp.suit = DIAMONDS;
+    break;
+  case 'c':
+    temp.suit = CLUBS;
+    break;
+  default:
+    temp.suit = NUM_SUITS;
+    break;
+  }
+  assert_card_valid(temp);
   return temp;
 }
 
